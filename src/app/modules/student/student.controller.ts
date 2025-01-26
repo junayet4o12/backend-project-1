@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { StudentServices } from "./student.service";
 // import studentValidationSchema from "./student.validation";
 import { z } from "zod";
+import studentValidationSchema from "./student.validation.zod";
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = req.body;
@@ -15,25 +16,18 @@ const createStudent = async (req: Request, res: Response) => {
     //   });
     // }
 
-    const studentValidationSchema = z.object({
-      id: z.string(),
-      name: z.object({
-        firstName: z.string().max(20, {
-          message: "First Name can not be more than 20 characters",
-        }),
-      }),
-    });
-    const result = await StudentServices.createStudentIntoDB(studentData);
+    const zodParseData = studentValidationSchema.parse(studentData);
+    const result = await StudentServices.createStudentIntoDB(zodParseData);
 
     res.status(200).json({
       success: true,
       message: "Student created successfully",
       data: result,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message || "Something went wrong",
       error: error,
     });
   }
@@ -44,11 +38,15 @@ const getAllStudent = async (req: Request, res: Response) => {
     const result = await StudentServices.getAllStudentsFromDB();
     res.status(200).json({
       success: true,
-      message: "Student created successfully",
+      message: "Student data has found",
       data: result,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong",
+      error: error,
+    });
   }
 };
 const getSingleStudent = async (req: Request, res: Response) => {
@@ -60,12 +58,34 @@ const getSingleStudent = async (req: Request, res: Response) => {
       message: "Student created successfully",
       data: result,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong",
+      error: error,
+    });
+  }
+};
+const deleteSingleStudent = async (req: Request, res: Response) => {
+  try {
+    const { studentId } = req.params;
+    const result = await StudentServices.deleteStudentFromDB(studentId);
+    res.status(200).json({
+      success: true,
+      message: "Student deleted successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong",
+      error: error,
+    });
   }
 };
 export const StudentControllers = {
   createStudent,
   getAllStudent,
   getSingleStudent,
+  deleteSingleStudent,
 };

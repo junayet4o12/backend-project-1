@@ -3,17 +3,16 @@ import { z } from "zod";
 // Name validation
 const nameValidation = z
   .string()
+  .trim()
   .regex(/^[A-Z][a-z]*$/, {
     message:
       "Name must start with an uppercase letter and contain only letters",
   })
-  .max(20, { message: "Name cannot be more than 20 characters" })
-  .trim();
-
+  .max(20, { message: "Name cannot be more than 20 characters" });
 // User name validation schema
 const userNameValidationSchema = z.object({
   firstName: nameValidation,
-  middleName: nameValidation.optional(), // Optional middle name
+  middleName: nameValidation, // Optional middle name
   lastName: nameValidation,
 });
 
@@ -44,6 +43,7 @@ const localGuardianValidationSchema = z.object({
 // Student validation schema
 const studentValidationSchema = z.object({
   id: z.string({ required_error: "Student ID is Required" }),
+  password: z.string({ required_error: "Password is Required" }).max(20),
   name: userNameValidationSchema,
   gender: z.enum(["male", "female", "other"], {
     required_error: "Gender is Required",
@@ -65,10 +65,10 @@ const studentValidationSchema = z.object({
   localGuardian: localGuardianValidationSchema,
   bloodGroup: z
     .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
-    .optional()
-    .or(z.literal("").optional()), // Allow empty string as valid
+    .optional(),
   profileImage: z.string().url().optional(),
   isActive: z.enum(["active", "blocked"]).default("active"),
+  isDeleted: z.boolean().default(false),
 });
 
 export default studentValidationSchema;
