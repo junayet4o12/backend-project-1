@@ -50,7 +50,7 @@ const createStudentValidationSchema = z.object({
         required_error: "Gender is Required",
         invalid_type_error: "Gender must be one of [male, female, other]",
       }),
-      dateOfBirth: z.string().optional(),
+      dateOfBirth: z.date().optional(),
       email: z
         .string({ required_error: "Email is Required" })
         .email({ message: "Email is not in valid email format" }),

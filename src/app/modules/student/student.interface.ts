@@ -28,7 +28,7 @@ export interface TStudent {
   contact: string;
   emergencyContact: string;
   gender: "male" | "female" | "other";
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
   presentAddress: string;
   permanentAddress: string;
   guardian: TGuardian;
