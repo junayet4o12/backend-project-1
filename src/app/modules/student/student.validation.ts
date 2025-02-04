@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { z } from "zod";
 
 // Name validation
@@ -39,36 +40,38 @@ const localGuardianValidationSchema = z.object({
   contactNo: z.string({ required_error: "Local Guardian Contact is Required" }),
   address: z.string({ required_error: "Local Guardian Address is Required" }),
 });
-
 // Student validation schema
-const studentValidationSchema = z.object({
-  id: z.string({ required_error: "Student ID is Required" }),
-  password: z.string({ required_error: "Password is Required" }).max(20),
-  name: userNameValidationSchema,
-  gender: z.enum(["male", "female", "other"], {
-    required_error: "Gender is Required",
-    invalid_type_error: "Gender must be one of [male, female, other]",
-  }),
-  dateOfBirth: z.string().optional(),
-  email: z
-    .string({ required_error: "Email is Required" })
-    .email({ message: "Email is not in valid email format" }),
-  presentAddress: z.string({ required_error: "Present Address is Required" }),
-  permanentAddress: z.string({
-    required_error: "Permanent Address is Required",
-  }),
-  contact: z.string({ required_error: "Contact Number is Required" }),
-  emergencyContact: z.string({
-    required_error: "Emergency Contact is Required",
-  }),
-  guardian: guardianValidationSchema,
-  localGuardian: localGuardianValidationSchema,
-  bloodGroup: z
-    .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
-    .optional(),
-  profileImage: z.string().url().optional(),
-  isActive: z.enum(["active", "blocked"]).default("active"),
-  isDeleted: z.boolean().default(false),
-});
+const createStudentValidationSchema = z.object({
+  body: z.object({
+    password: z.string({ required_error: "Password is Required" }).max(20),
+    student: z.object({
+      name: userNameValidationSchema,
+      gender: z.enum(["male", "female", "other"], {
+        required_error: "Gender is Required",
+        invalid_type_error: "Gender must be one of [male, female, other]",
+      }),
+      dateOfBirth: z.string().optional(),
+      email: z
+        .string({ required_error: "Email is Required" })
+        .email({ message: "Email is not in valid email format" }),
+      presentAddress: z.string({ required_error: "Present Address is Required" }),
+      permanentAddress: z.string({
+        required_error: "Permanent Address is Required",
+      }),
+      contact: z.string({ required_error: "Contact Number is Required" }),
+      emergencyContact: z.string({
+        required_error: "Emergency Contact is Required",
+      }),
+      guardian: guardianValidationSchema,
+      localGuardian: localGuardianValidationSchema,
+      bloodGroup: z
+        .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
+        .optional(),
+      profileImage: z.string().url().optional(),
+    })
+  })
+})
 
-export default studentValidationSchema;
+export const studentValidations = {
+  createStudentValidationSchema
+};
