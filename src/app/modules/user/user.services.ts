@@ -15,7 +15,6 @@ const createStudentIntoDB = async (password: string | undefined, studentData: TS
     if (Object.keys(newUser).length) {
         studentData.id = newUser.id;
         studentData.user = newUser._id
-        console.log(newUser._id);
         
         const newStudent = await Student.create(studentData);
         return newStudent;
