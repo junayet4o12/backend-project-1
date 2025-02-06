@@ -28,13 +28,14 @@ export interface TStudent {
   contact: string;
   emergencyContact: string;
   gender: "male" | "female" | "other";
-  dateOfBirth?: Date;
+  dateOfBirth?: string;
   presentAddress: string;
   permanentAddress: string;
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   bloodGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   profileImage?: string;
+  admissionSemester?: Types.ObjectId;
   isDeleted: boolean;
 }
 
