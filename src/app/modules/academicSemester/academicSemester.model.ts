@@ -1,8 +1,9 @@
 import { model, Schema, Types } from "mongoose";
 import { IAcademicSemester } from "./academicSemester.interface";
 import { AcademicSemesterCode, AcademicSemesterName, Months } from "./academicSemester.constant";
+import AppError from "../../errors/AppError";
 
-
+import httpStatus from "http-status";
 
 const academicSemesterSchema = new Schema<IAcademicSemester>({
     name: {
@@ -39,7 +40,7 @@ academicSemesterSchema.pre('save', async function (next) {
         name: this.name,
     })
     if (isSemesterExist) {
-        throw new Error('Semester already exists');
+        throw new AppError(httpStatus.NOT_FOUND ,'Semester already exists');
     }
     next();
 })
@@ -49,13 +50,13 @@ academicSemesterSchema.pre('findOneAndUpdate', async function (next) {
 
     const { _id: id } = this.getQuery();
     const existing = await AcademicSemester.findById(id);
-    if (!existing) throw new Error('Semester not found');
+    if (!existing) throw new AppError(httpStatus.NOT_FOUND,'Semester not found');
 
     const name = update.name ?? existing.name;
     const year = update.year ?? existing.year;
 
     const duplicate = await AcademicSemester.findOne({ name, year, _id: { $ne: id } });
-    if (duplicate) throw new Error('Semester already exists with same name and year');
+    if (duplicate) throw new AppError(httpStatus.CONFLICT ,'Semester already exists with same name and year');
 
     next();
 });
