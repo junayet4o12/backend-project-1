@@ -9,11 +9,15 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/api/v1', router)
-app.get('/', (req: Request, res: Response) => {
-  const hello = 'Hello world!';
 
+const test = async (req: Request, res: Response) => {
+ 
+  
+  const hello = 'Hello world!';
   res.send(hello);
-});
+}
+
+app.get('/', test);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   globalErrorHandler(err, req, res, next)

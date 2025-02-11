@@ -1,4 +1,5 @@
 import { Model, Types } from "mongoose";
+import { IUserName } from "../../interface/userName";
 
 export interface TGuardian {
   fatherName: string;
@@ -8,11 +9,7 @@ export interface TGuardian {
   motherOccupation: string;
   motherContact: string;
 }
-export interface TUserName {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-}
+
 export interface TLocalGuardian {
   name: string;
   occupation: string;
@@ -22,8 +19,7 @@ export interface TLocalGuardian {
 export interface TStudent {
   id: string;
   user: Types.ObjectId;
-  password: string;
-  name: TUserName;
+  name: IUserName;
   email: string;
   contact: string;
   emergencyContact: string;
@@ -43,12 +39,3 @@ export interface TStudent {
 export interface TStudentModel extends Model<TStudent> {
   isUserExist(id: string): Promise<TStudent | null>;
 }
-
-// export interface TStudentMethods {
-//   isUserExist(id: string): Promise<TStudent | null>;
-// }
-// export type TStudentModel = Model<
-//   TStudent,
-//   Record<string, never>,
-//   TStudentMethods
-// >;

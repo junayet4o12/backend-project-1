@@ -1,21 +1,6 @@
 
 import { z } from "zod";
-
-// Name validation
-const nameValidation = z
-  .string()
-  .trim()
-  .regex(/^[A-Z][a-z]*$/, {
-    message:
-      "Name must start with an uppercase letter and contain only letters",
-  })
-  .max(20, { message: "Name cannot be more than 20 characters" });
-// User name validation schema
-const userNameValidationSchema = z.object({
-  firstName: nameValidation,
-  middleName: nameValidation, // Optional middle name
-  lastName: nameValidation,
-});
+import { updateNameValidation, userNameValidationSchema } from "../../validation/user.validation";
 
 // Guardian validation schema
 const guardianValidationSchema = z.object({
@@ -41,35 +26,6 @@ const localGuardianValidationSchema = z.object({
   address: z.string({ required_error: "Local Guardian Address is Required" }),
 });
 
-
-const updateNameValidation = z
-  .object({
-    firstName: z
-      .string()
-      .trim()
-      .regex(/^[A-Z][a-z]*$/, {
-        message: "Name must start with an uppercase letter and contain only letters",
-      })
-      .max(20, { message: "Name cannot be more than 20 characters" })
-      .optional(),
-    middleName: z
-      .string()
-      .trim()
-      .regex(/^[A-Z][a-z]*$/, {
-        message: "Name must start with an uppercase letter and contain only letters",
-      })
-      .max(20, { message: "Name cannot be more than 20 characters" })
-      .optional(),
-    lastName: z
-      .string()
-      .trim()
-      .regex(/^[A-Z][a-z]*$/, {
-        message: "Name must start with an uppercase letter and contain only letters",
-      })
-      .max(20, { message: "Name cannot be more than 20 characters" })
-      .optional(),
-  })
-  .partial();
 
 const updateGuardianValidation = z
   .object({

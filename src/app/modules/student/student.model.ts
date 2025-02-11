@@ -5,27 +5,10 @@ import {
   TLocalGuardian,
   TStudentModel,
   TStudent,
-  TUserName,
 } from "./student.interface";
+import { userNameSchema } from "../../schema/userName.schema";
 
-const userNameSchema = new Schema<TUserName>({
-  firstName: {
-    type: String,
-    required: [true, "First Name is Required"],
-    maxlength: [20, "First Name Cannot be more than 20 characters"],
-  },
-  middleName: {
-    type: String,
-    required: [true, "Middle Name is Required"],
-    maxlength: [20, "Middle Name Cannot be more than 20 characters"],
-    trim: true,
-  },
-  lastName: {
-    type: String,
-    required: [true, "Last Name is Required"],
-    maxlength: [20, "Last Name Cannot be more than 20 characters"],
-  },
-});
+
 
 const guardianSchema = new Schema<TGuardian>({
   fatherName: { type: String, required: [true, "Father Name is Required"] },
@@ -103,7 +86,7 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
       type: String,
       required: [true, "Permanent Address is Required"],
     },
-    contact: { type: String, required: [true, "Contact Number is Required"] },
+    contact: { type: String, required: [true, "Contact Number is Required"] , unique: true},
     emergencyContact: {
       type: String,
       required: [true, "Emergency Contact is Required"],
@@ -141,7 +124,7 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
 
 // virtual
 studentSchema.virtual("fullName").get(function () {
-  return [this.name.firstName, this.name.middleName, this.name.lastName].join(
+  return [this?.name?.firstName, this?.name?.middleName, this?.name?.lastName]?.join(
     " "
   );
 });
