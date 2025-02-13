@@ -15,7 +15,7 @@ const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleAdminsFromDB = async (id: string) => {
-  const result = await Admin.findOne({ id })
+  const result = await Admin.findById(id)
   return result;
 };
 
@@ -23,7 +23,7 @@ const deleteAdminFromDB = async (id: string) => {
   const session = await startSession()
   try {
     session.startTransaction()
-    const deletedAdmin = await Admin.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session });
+    const deletedAdmin = await Admin.findByIdAndUpdate(id, { isDeleted: true }, { new: true, session });
 
     if (deletedAdmin === null) {
       throw new AppError(httpStatus.NOT_FOUND, "Failed to delete Admin")
@@ -31,7 +31,8 @@ const deleteAdminFromDB = async (id: string) => {
     if (!deletedAdmin) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete Admin")
     }
-    const deleteUser = await User.findOneAndUpdate({ id }, { isDeleted: true }, { new: true, session })
+    const userId = deletedAdmin.user
+    const deleteUser = await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true, session })
     if (!deleteUser) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete User")
     }
@@ -49,6 +50,8 @@ const deleteAdminFromDB = async (id: string) => {
 
 const updateAdminOfDB = async (id: string, payload: Partial<IAdmin>) => {
   const { name, ...remainingAdminsData } = payload;
+  console.log(name);
+
   const modifiedUpdatedData: Record<string, unknown> = {
     ...remainingAdminsData,
   }
@@ -57,7 +60,7 @@ const updateAdminOfDB = async (id: string, payload: Partial<IAdmin>) => {
       modifiedUpdatedData[`name.${key}`] = value
     }
   }
-  const result = await Admin.findOneAndUpdate({ id }, modifiedUpdatedData, { new: true, runValidators: true });
+  const result = await Admin.findByIdAndUpdate(id, modifiedUpdatedData, { new: true, runValidators: true });
   return result
 }
 

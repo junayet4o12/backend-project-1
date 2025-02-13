@@ -13,21 +13,21 @@ const getAllFaculty = catchAsync(async (req, res) => {
 })
 
 const getSingleFaculty = catchAsync(async (req, res) => {
-  const { facultyId } = req.params;
-  const result = await FacultyServices.getSingleFacultiesFromDB(facultyId);
+  const { id } = req.params;
+  const result = await FacultyServices.getSingleFacultiesFromDB(id);
   sendResponse(res, { statusCode: httpStatus.OK, success: true, message: "Faculty data has found", data: result });
 })
 
 const deleteSingleFaculty = catchAsync(async (req, res) => {
-  const { facultyId } = req.params;
-  const result = await FacultyServices.deleteFacultyFromDB(facultyId);
+  const { id } = req.params;
+  const result = await FacultyServices.deleteFacultyFromDB(id);
   sendResponse(res, { statusCode: httpStatus.OK, success: true, message: "Faculty deleted successfully", data: result });
 })
 
 const updateFaculty = catchAsync(async (req, res) => {
-  const { facultyId } = req.params;
+  const { id } = req.params;
 
-  const result = await FacultyServices.updateFacultyOfDB(facultyId, req.body.faculty);
+  const result = await FacultyServices.updateFacultyOfDB(id, req.body.faculty);
   sendResponse(res, { statusCode: httpStatus.OK, success: true, message: "Faculty updated successfully", data: result });
 })
 
