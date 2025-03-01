@@ -6,7 +6,6 @@ import { Course, CourseFaculty } from "./course.model"
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 const createCourseIntoDB = async (payload: ICourse) => {
-    console.log(payload);
 
     const result = await Course.create(payload);
     return result
@@ -15,7 +14,8 @@ const createCourseIntoDB = async (payload: ICourse) => {
 const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
     const courseQuery = new QueryBuilder(Course.find(), query).search(CourseSearchableFields).filter().sort().paginate().fields()
     const result = await courseQuery.modelQuery.populate('preRequisiteCourses.course');
-    return result;
+    const meta = await courseQuery.countTotal();
+    return { meta, result }
 }
 const getSingleCourseFromDB = async (id: string) => {
     const result = await Course.findById(id).populate('preRequisiteCourses.course');
@@ -117,12 +117,17 @@ const removeFacultiesFromCourseIntoDB = async (id: string, payload: Partial<ICou
     const result = await CourseFaculty.findByIdAndUpdate(
         id,
         {
-           $pull: {faculties: {$in: payload}}
+            $pull: { faculties: { $in: payload } }
         },
         {
             new: true
         }
     )
+    return result
+}
+
+const getCourseFaculties = async (id: string) => {
+    const result = await CourseFaculty.findOne({ course: id }).populate('faculties')
     return result
 }
 
@@ -137,5 +142,6 @@ export const CourseServices = {
     deleteCourseFromDB,
     updateCourseOfDB,
     assignFacultiesWithCourseIntoDB,
-    removeFacultiesFromCourseIntoDB
+    removeFacultiesFromCourseIntoDB,
+    getCourseFaculties
 }

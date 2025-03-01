@@ -50,7 +50,6 @@ const deleteAdminFromDB = async (id: string) => {
 
 const updateAdminOfDB = async (id: string, payload: Partial<IAdmin>) => {
   const { name, ...remainingAdminsData } = payload;
-  console.log(name);
 
   const modifiedUpdatedData: Record<string, unknown> = {
     ...remainingAdminsData,

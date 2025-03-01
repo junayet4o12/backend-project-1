@@ -45,13 +45,14 @@ const facultySchema = new Schema<IFaculty, IFacultyModel>(
       type: String,
       required: [true, "Permanent Address is Required"],
     },
-    contact: { type: String, required: [true, "Contact Number is Required"] , unique: true},
+    contact: { type: String, required: [true, "Contact Number is Required"], unique: true },
     emergencyContact: {
       type: String,
       required: [true, "Emergency Contact is Required"],
     },
-    profileImage: { type: String },
-    managementDepartment: { type: Schema.Types.ObjectId, ref: "AcademicDepartment" },
+    profileImage: { type: String, default: '' },
+    managementDepartment: { type: Schema.Types.ObjectId, ref: "AcademicDepartment", required: true },
+    academicFaculty: { type: Schema.Types.ObjectId, ref: "AcademicFaculty" },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -75,17 +76,14 @@ facultySchema.virtual("fullName").get(function () {
 
 // query middleware
 facultySchema.pre("find", async function (next) {
-  // console.log(this);
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 facultySchema.pre("findOne", async function (next) {
-  // console.log(this);
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 facultySchema.pre("aggregate", async function (next) {
-  // console.log(this);
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
 
   next();

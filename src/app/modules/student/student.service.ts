@@ -10,18 +10,15 @@ import { studentSearchableField } from "./student.constant";
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   const studentQuery = new QueryBuilder(Student.find(), query).search(studentSearchableField).filter().sort().paginate().fields();
-  const result = await studentQuery.modelQuery.populate("admissionSemester").populate({
-    path: "academicDepartment",
-    populate: { path: "academicFaculty" },
-  });
-  return result
+
+
+  const result = await studentQuery.modelQuery.populate("admissionSemester academicDepartment academicFaculty");
+  const meta = await studentQuery.countTotal();
+  return { meta, result }
 };
 
 const getSingleStudentsFromDB = async (id: string) => {
-  const result = await Student.findById(id).populate("admissionSemester").populate({
-    path: "academicDepartment",
-    populate: { path: "academicFaculty" },
-  });
+  const result = await Student.findById(id).populate("admissionSemester academicDepartment academicFaculty");
   return result;
 };
 
@@ -78,6 +75,8 @@ const updateStudentOfDB = async (id: string, payload: Partial<TStudent>) => {
   const result = await Student.findByIdAndUpdate(id, modifiedUpdatedData, { new: true, runValidators: true });
   return result
 }
+
+
 
 export const StudentServices = {
   getAllStudentsFromDB,

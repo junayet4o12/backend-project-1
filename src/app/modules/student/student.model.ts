@@ -86,7 +86,7 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
       type: String,
       required: [true, "Permanent Address is Required"],
     },
-    contact: { type: String, required: [true, "Contact Number is Required"] , unique: true},
+    contact: { type: String, required: [true, "Contact Number is Required"], unique: true },
     emergencyContact: {
       type: String,
       required: [true, "Emergency Contact is Required"],
@@ -107,8 +107,9 @@ const studentSchema = new Schema<TStudent, TStudentModel>(
       },
       required: false,
     },
-    profileImage: { type: String },
+    profileImage: { type: String, default: '' },
     admissionSemester: { type: Schema.Types.ObjectId, ref: "AcademicSemester" },
+    academicFaculty: { type: Schema.Types.ObjectId, ref: "AcademicFaculty" },
     academicDepartment: { type: Schema.Types.ObjectId, ref: "AcademicDepartment" },
     isDeleted: {
       type: Boolean,
@@ -133,17 +134,14 @@ studentSchema.virtual("fullName").get(function () {
 
 // query middleware
 studentSchema.pre("find", async function (next) {
-  // console.log(this);
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 studentSchema.pre("findOne", async function (next) {
-  // console.log(this);
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 studentSchema.pre("aggregate", async function (next) {
-  // console.log(this);
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
 
   next();

@@ -32,6 +32,7 @@ export interface TStudent {
   bloodGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   profileImage?: string;
   admissionSemester?: Types.ObjectId;
+  academicFaculty: Types.ObjectId;
   academicDepartment?: Types.ObjectId;
   isDeleted: boolean;
 }

@@ -15,6 +15,7 @@ export interface IFaculty {
     permanentAddress: string;
     profileImage?: string;
     managementDepartment: Types.ObjectId;
+    academicFaculty: Types.ObjectId;
     isDeleted: boolean;
 }
 

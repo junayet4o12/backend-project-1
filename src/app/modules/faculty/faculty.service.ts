@@ -11,7 +11,8 @@ import { IFaculty } from "./faculty.interface";
 const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   const studentQuery = new QueryBuilder(Faculty.find(), query).search(facultySearchableField).filter().sort().paginate().fields();
   const result = await studentQuery.modelQuery.populate("managementDepartment")
-  return result
+  const meta = await studentQuery.countTotal();
+  return {meta,result}
 };
 
 const getSingleFacultiesFromDB = async (id: string) => {
@@ -24,7 +25,6 @@ const deleteFacultyFromDB = async (id: string) => {
   try {
     session.startTransaction()
     const deletedFaculty = await Faculty.findByIdAndUpdate(id, { isDeleted: true }, { new: true, session });
-    console.log(deletedFaculty);
 
     if (deletedFaculty === null) {
       throw new AppError(httpStatus.NOT_FOUND, "Failed to delete Faculty")

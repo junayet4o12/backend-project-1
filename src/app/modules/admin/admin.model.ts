@@ -46,7 +46,7 @@ const adminSchema = new Schema<IAdmin, IAdminModel>(
       type: String,
       required: [true, "Emergency Contact is Required"],
     },
-    profileImage: { type: String },
+    profileImage: { type: String, default: '' },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -70,17 +70,14 @@ adminSchema.virtual("fullName").get(function () {
 
 // query middleware
 adminSchema.pre("find", async function (next) {
-  // console.log(this);
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 adminSchema.pre("findOne", async function (next) {
-  // console.log(this);
   this.find({ isDeleted: { $ne: true } });
   next();
 });
 adminSchema.pre("aggregate", async function (next) {
-  // console.log(this);
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
 
   next();
